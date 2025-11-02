@@ -1,0 +1,11 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MemoController;
+
+Route::get('/memo', [MemoController::class, 'show'])->name('memo.show');
+Route::post('/memo/add', [MemoController::class, 'add'])->name('memo.add');
+
+
+?>use Illuminate\\Support\\Facades\\Route;
+
