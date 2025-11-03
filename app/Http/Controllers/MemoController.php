@@ -46,11 +46,28 @@ class MemoController extends Controller
 
     public function postEdit(Request $request)
     {
-     $edit_id = $request->edit_id;
-     $edit_memo = $request->edit_memo;
+        $edit_id = $request->edit_id;
+        $edit_memo = $request->edit_memo;
 
-     Memo::where('id', $edit_id)->update(['content' => $edit_memo]);
+        Memo::where('id', $edit_id)->update(['content' => $edit_memo]);
 
-     return self::show();
+        return self::show();
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword'); // リクエストからキーワードを取得
+
+        if ($keyword) {
+            // キーワードが入力されている場合、データベースを検索
+            $memos = Memo::where('title', 'like', '%' . $keyword . '%')
+                        ->orWhere('content', 'like', '%' . $keyword . '%') // タイトルと本文で検索
+                        ->get();
+        } else {
+            // キーワードがない場合は全件取得
+            $memos = Memo::all();
+        }
+
+        return view('memos.index', ['memos' => $memos, 'keyword' => $keyword]);
     }
 }

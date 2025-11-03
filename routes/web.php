@@ -5,4 +5,6 @@ Route::post('/memo/add', [MemoController::class, 'add'])->name('memo.add');
 Route::post('/delete', 'App\\Http\\Controllers\\MemoController@delete');
 Route::get('edit/{edit_id}', 'App\\Http\\Controllers\\MemoController@getEdit');
 Route::post('update', 'App\\Http\\Controllers\\MemoController@postEdit');
+Route::get('/memos', [MemoController::class, 'index'])->name('memos.index');
+Route::get('/memos/search', [MemoController::class, 'search'])->name('memos.search');
 Route::get('/', function () { return redirect('/memo'); });
