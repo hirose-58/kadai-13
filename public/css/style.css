@@ -2,7 +2,7 @@ body{
     background-color: #edf2f4;
 }
 .container{
-    max-width: 980px;
+    width: 80%;
     margin-right: auto;
     margin-left: auto;
 }
@@ -66,7 +66,8 @@ body{
 }
 .memo_form input[type="submit"]:hover,
 .edit_form input:hover,
-.del_area input:hover{
+.del_area input:hover,
+.clear_btn:hover{
     opacity: .8;
 }
 .edit_form input{
@@ -78,4 +79,26 @@ body{
     background-color: #d64045;
     color: #fefefe;
     font-weight: bold;
+}
+
+.clear_btn {
+    border-radius: 5px;
+    border: none;
+    padding: 5px 20px;
+    background-color: #38B000;
+    color: #fefefe;
+    font-weight: bold;
+}
+
+.btn-submit-style {
+    border-radius: 5px;
+    border: none;
+    padding: 5px 20px;
+    background-color: #38B000;
+    color: #fefefe;
+    font-weight: bold;
+    
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }

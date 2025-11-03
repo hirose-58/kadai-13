@@ -6,34 +6,38 @@ use App\Models\Memo;
 
 class MemoController extends Controller
 {
-    // 一覧表示
-    public function show()
+    public function show(Request $request)
     {
-        // DBのmemoテーブルからすべてのレコードを取得
-        $memo_info = Memo::orderBy('created_at', 'desc')->get();
+        $search_word = $request->input('search_word');
 
-        // home.blade.php にデータを渡す
-        return view('home', compact('memo_info'));
+        $query = Memo::orderBy('created_at', 'desc');
+
+        if ($search_word) {
+            $query->where('content', 'like', '%' . $search_word . '%');
+        }
+
+        $memo_info = $query->get();
+
+        return view('home', compact('memo_info', 'search_word'));
     }
 
-    // メモ追加処理
     public function add(Request $request)
     {
         $memo_text = $request->memo_text;
         $memo_model = new Memo();
         $memo_model->content = $memo_text;
         $memo_model->save();
-        return self::show();
+        
+        return redirect()->route('memo.show'); 
     }
 
     public function delete(Request $request)
     {
         $delete_id = $request->delete_id;
-
         $memo_model = Memo::find($delete_id);
         $memo_model->delete();
 
-        return self::show();
+        return redirect()->route('memo.show'); 
     }
 
     public function getEdit($edit_id)
@@ -51,23 +55,18 @@ class MemoController extends Controller
 
         Memo::where('id', $edit_id)->update(['content' => $edit_memo]);
 
-        return self::show();
+        return redirect()->route('memo.show'); 
     }
-
-    public function search(Request $request)
+    
+    public function bulkDelete(Request $request)
     {
-        $keyword = $request->input('keyword'); // リクエストからキーワードを取得
+        $delete_ids = $request->input('delete_ids');
 
-        if ($keyword) {
-            // キーワードが入力されている場合、データベースを検索
-            $memos = Memo::where('title', 'like', '%' . $keyword . '%')
-                        ->orWhere('content', 'like', '%' . $keyword . '%') // タイトルと本文で検索
-                        ->get();
-        } else {
-            // キーワードがない場合は全件取得
-            $memos = Memo::all();
+        if (!empty($delete_ids)) {
+            Memo::whereIn('id', $delete_ids)->delete();
         }
 
-        return view('memos.index', ['memos' => $memos, 'keyword' => $keyword]);
+        return redirect()->route('memo.show')->with('success', '選択したメモを一括削除しました。');
     }
 }
+

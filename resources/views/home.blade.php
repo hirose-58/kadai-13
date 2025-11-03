@@ -18,45 +18,47 @@
                 <input class="memo_text" type="text" name="memo_text" id="memo_text" placeholder="メモを入力">
                 <input type="submit" value="追加">
             </form>
-            <div class="search_area" style="margin-top: 50px">
-                <h2>検索</h2>
-                    <form action="">
-                    <input class="memo_text" type="text" name="search_word" id="search_word">
-                    <input type="submit" value="検索">
-                    </form>
-            </div>
+
+        <div class="search_area" style="margin-top: 50px">
+            <h2>検索</h2>
+                <form action="{{ route('memo.show') }}" method="GET"> 
+                <input class="memo_text" type="text" name="search_word" id="search_word" value="{{ request('search_word') }}">
+                <input type="submit" value="検索">
+                    
+                @if(request('search_word'))
+                    <a href="{{ route('memo.show') }}" class="clear_btn">検索クリア</a>
+                @endif
+            </form>
         </div>
+    </div>
 
-        <div class="memo_show">
-         @foreach($memo_info as $memo)
-            <div class="memo_item">
-                <div class="memo_title">
-                 <time>{{$memo->created_at}}</time>
-                 <p>{{$memo->content}}</p>
-                </div>
+    <form action="{{ route('memo.bulkDelete') }}" method="POST" id="bulkDeleteForm">
+            @csrf
+            <div style="margin-bottom: 10px;"> 
+                <input type="submit" value="選択したメモを一括削除">
+            </div>
 
-                <div class="btn_area">
-                    <div class="edit_form">
-                        <form action="{{ asset('/edit/'.$memo->id) }}" method="get">
-                            @csrf
-                            <input type="submit" value="編集">
-                        </form>
-                    </div>
+    <div class="memo_show">
+        @foreach($memo_info as $memo)
+        <div class="memo_item">
+            <div class="memo_title">
+            <input type="checkbox" name="delete_ids[]" value="{{ $memo->id }}">
+            <time>{{$memo->created_at}}</time>
+            <p>{{$memo->content}}</p>
+            </div>
 
-                    <div class="del_area">
-                        <form action="{{ asset('/delete') }}" method="post">
-                        @csrf
-                        <input type="hidden" name="delete_id" value="{{$memo->id}}">
-                        <input type="submit" value="削除">
-                        </form>
-                    </div>
+            <div class="btn_area">
+                <div class="edit_form">
+                    <a href="{{ route('memo.getEdit', ['edit_id' => $memo->id]) }}" class="btn-submit-style">編集</a>
                 </div>
             </div>
+
+        </div>
         @endforeach
         </div>
+
+        </form>
             
-                
-           
         </div>
     </div>
 </div>
